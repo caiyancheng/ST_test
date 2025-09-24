@@ -1,0 +1,40 @@
+<div class="sidebar">
+    <h2>MENU</h2>
+
+    <div class="menu-item" onclick="toggleMenu('contrast_detection')">Contrast Detection</div>
+    <div id="contrast_detection" class="sub-menu">
+
+        <div class="sub-menu-item" onclick="toggleMenu('contrast_detection_spatial_frequency')">Spatial Frequency</div>
+            <div id="contrast_detection_spatial_frequency" class="sub-menu">
+                <a href="contrast_detection_spatial_frequency_achromatic_gabor_patch.html"><div class="sub-menu-item">Achromatic Gabor</div></a>
+                <a href="contrast_detection_spatial_frequency_red_green_gabor_patch.html"><div class="sub-menu-item">RG Gabor</div></a>
+                <a href="contrast_detection_spatial_frequency_yellow_violet_gabor_patch.html"><div class="sub-menu-item">YV Gabor</div></a>
+                <a href="contrast_detection_spatial_frequency_achromatic_transient_gabor_patch.html"><div class="sub-menu-item">Transient Gabor</div></a>
+            </div>
+
+        <a href="luminance_masking.html"><div class="sub-menu-item">Luminance</div></a>
+        <a href="contrast_detection_area_achromatic_gabor_patch.html"><div class="sub-menu-item">Area</div></a>
+
+
+
+    </div>
+
+    <div class="menu-item" onclick="toggleMenu('contrast_masking')">Contrast Masking</div>
+    <div id="contrast_masking" class="sub-menu">
+        <a href="contrast_masking_phase_coherent_masking.html"><div class="sub-menu-item">Phase Coherent Masking</div></a>
+        <a href="contrast_masking_phase_incoherent_masking.html"><div class="sub-menu-item">Phase Incoherent Masking</div></a>
+    </div>
+
+    <a href="flicker_detection_achromatic_disk.html"><div class="sub-menu-item">Flicker Detection</div></a>
+
+    <div class="menu-item" onclick="toggleMenu('contrast_matching')">Contrast Matching</div>
+    <div id="contrast_matching" class="sub-menu">
+        <a href="contrast_matching_across_spatial_frequencies.html"><div class="sub-menu-item">Spatial Frequencies</div></a>
+        <a href="contrast_matching_across_cardinal_color_directions.html"><div class="sub-menu-item">Color Directions</div></a>
+    </div>
+
+    <a href="jpeg_compression_test.html"><div class="sub-menu-item">JPEG Compression</div></a>
+
+
+    <!-- <a href="contrast_constancy_contrast_matching.html"><div class="menu-item" onclick="toggleMenu('menu3')">Contrast Constancy - Contrast Matching</div></a> -->
+</div>
