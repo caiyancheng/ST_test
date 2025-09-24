@@ -7,7 +7,6 @@ import torch
 import tempfile
 from subprocess import Popen, PIPE
 
-
 from pycvvdp.vq_metric import vq_metric
 from pyst.yuv_utils import YUVWriter
 
@@ -35,12 +34,13 @@ chmod 777 $path
 mount -t tmpfs -o size=16048M tmpfs $path
 """
 
+
 class vmaf_met(vq_metric):
     def __init__(self, cache_ref_loc='./cache', device=None):
- 
+
         # Use GPU if available
         if device is None:
-            if torch.cuda.is_available() and torch.cuda.device_count()>0:
+            if torch.cuda.is_available() and torch.cuda.device_count() > 0:
                 self.device = torch.device('cuda:0')
             else:
                 self.device = torch.device('cpu')
@@ -51,17 +51,17 @@ class vmaf_met(vq_metric):
 
         self.color_space = 'display_encoded_dmax'
 
-
     def predict_video_source(self, vid_source, frame_padding="replicate"):
 
         h, w, N_frames = vid_source.get_video_size()
 
         vprops = dict()
-        vprops["width"]=w
-        vprops["height"]=h
+        vprops["width"] = w
+        vprops["height"] = h
         vprops["fps"] = vid_source.get_frames_per_second()
         vprops["chroma_ss"] = '444'
-        vprops["bit_depth"] = 16  # We use 16 bits, to offer the best precision possible, as we cannot offer float-points to the metric, as we are doing in other metrics!
+        vprops[
+            "bit_depth"] = 16  # We use 16 bits, to offer the best precision possible, as we cannot offer float-points to the metric, as we are doing in other metrics!
 
         if self.display_photometry == 'sRGB':
             vprops["color_space"] = '709'
@@ -70,24 +70,25 @@ class vmaf_met(vq_metric):
 
         bit_depth = 16  # This is an argument required for VMAF metric!
 
-        os.makedirs(self.cache_ref_loc, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix=self.short_name(), dir=self.cache_ref_loc) as temp_dir:
 
-            out_fname = os.path.join( temp_dir, "vmaf.json" )
+            out_fname = os.path.join(temp_dir, "vmaf.json")
 
-            with YUVWriter( os.path.join( temp_dir, "test" ), vprops ) as test_vw, YUVWriter( os.path.join( temp_dir, "ref" ), vprops ) as ref_vw:
-
-                #for ff in trange(N_frames, leave=False):
+            with YUVWriter(os.path.join(temp_dir, "test"), vprops) as test_vw, YUVWriter(os.path.join(temp_dir, "ref"),
+                                                                                         vprops) as ref_vw:
+                # for ff in trange(N_frames, leave=False):
                 for ff in range(N_frames):
-                    T = vid_source.get_test_frame(ff, device=self.device, colorspace=self.color_space).squeeze().permute(1,2,0).cpu().numpy()
-                    R = vid_source.get_reference_frame(ff, device=self.device, colorspace=self.color_space).squeeze().permute(1,2,0).cpu().numpy()
+                    T = vid_source.get_test_frame(ff, device=self.device,
+                                                  colorspace=self.color_space).squeeze().permute(1, 2, 0).cpu().numpy()
+                    R = vid_source.get_reference_frame(ff, device=self.device,
+                                                       colorspace=self.color_space).squeeze().permute(1, 2,
+                                                                                                      0).cpu().numpy()
 
                     # Save the output as yuv file
                     test_vw.append_frame_rgb(T)
                     ref_vw.append_frame_rgb(R)
 
-                # vmaf_cmd = f'vmaf --pixel_format 444 --width {w} --height {h} --bitdepth {bit_depth} --distorted {test_vw.fname} --reference {ref_vw.fname} --json -o {out_fname} --model version=vmaf_v0.6.1:disable_clip --threads 32 --quiet'
-                vmaf_cmd = f'vmaf --pixel_format 444 --width {w} --height {h} --bitdepth {bit_depth} --distorted {test_vw.fname} --reference {ref_vw.fname} --json -o {out_fname} --model path=vmaf/model/vmaf_v0.6.1.json --threads 32 --quiet'
+                vmaf_cmd = f'vmaf --pixel_format 444 --width {w} --height {h} --bitdepth {bit_depth} --distorted {test_vw.fname} --reference {ref_vw.fname} --json -o {out_fname} --model version=vmaf_v0.6.1:disable_clip --threads 32 --quiet'
 
                 os.system(vmaf_cmd)
                 with open(out_fname) as f:
@@ -102,12 +103,11 @@ class vmaf_met(vq_metric):
     @staticmethod
     def name():
         return 'VMAF_v0.6.1'
-    
+
     @staticmethod
     def is_lower_better():
         return False
-    
+
     @staticmethod
     def predictions_range():
         return 0, 100
-
